@@ -63,7 +63,7 @@ func handleResponse(request string) string {
 		response.SetProtocol(PROTOCOL)
 		response.SetStatus(HTTP_STATUS_OK)
 
-		if req.headers[ACCEPT_ENCODING_HEADER] == ENCODING_TYPE_GZIP {
+		if strings.Contains(req.headers[ACCEPT_ENCODING_HEADER], ENCODING_TYPE_GZIP) {
 			response.SetHeader(CONTENT_ENCODING_HEADER, ENCODING_TYPE_GZIP)
 		}
 

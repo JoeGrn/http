@@ -62,12 +62,14 @@ func handleResponse(request string) string {
 		response := NewResponse()
 		response.SetProtocol(PROTOCOL)
 		response.SetStatus(HTTP_STATUS_OK)
+		response.SetHeader(CONTENT_TYPE_HEADER, CONTENT_TYPE_TEXT)
 
 		if strings.Contains(req.headers[ACCEPT_ENCODING_HEADER], ENCODING_TYPE_GZIP) {
 			response.SetHeader(CONTENT_ENCODING_HEADER, ENCODING_TYPE_GZIP)
+			body = GzipCompress(body)
+
 		}
 
-		response.SetHeader(CONTENT_TYPE_HEADER, CONTENT_TYPE_TEXT)
 		response.SetHeader(CONTENT_LENGTH_HEADER, fmt.Sprintf("%d", len(body)))
 		response.SetBody(body)
 

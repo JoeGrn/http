@@ -1,6 +1,7 @@
 package main
 
 import (
+	"compress/gzip"
 	"os"
 	"strings"
 )
@@ -42,4 +43,13 @@ func GetDirectoryArg() string {
 	}
 
 	return ""
+}
+
+func GzipCompress(data string) string {
+	var b strings.Builder
+	w := gzip.NewWriter(&b)
+	w.Write([]byte(data))
+	w.Close()
+
+	return b.String()
 }

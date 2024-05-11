@@ -1,6 +1,6 @@
 # HTTP
 
-A http server built in Go that's capable of handling GET/POST requests, serving files and handling multiple concurrent connections.
+A http server built in Go that's capable of handling GET/POST requests, serving files, gzip compression and handling multiple concurrent connections.
 
 ## Usage
 

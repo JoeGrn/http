@@ -12,13 +12,20 @@ const (
 )
 
 const (
-	CONTENT_TYPE_HEADER   = "Content-Type: "
-	CONTENT_LENGTH_HEADER = "Content-Length: "
+	CONTENT_TYPE_HEADER     = "Content-Type"
+	CONTENT_LENGTH_HEADER   = "Content-Length"
+	CONTENT_ENCODING_HEADER = "Content-Encoding"
+	ACCEPT_ENCODING_HEADER  = "Accept-Encoding"
 )
 
 const (
 	CONTENT_TYPE_TEXT   = "text/plain"
 	CONTENT_TYPE_STREAM = "application/octet-stream"
+)
+
+const (
+	ENCODING_TYPE_GZIP             = "gzip"
+	ENCODING_TYPE_INVALID_ENCODING = "invalid-encoding"
 )
 
 const (

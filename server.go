@@ -52,12 +52,35 @@ func handleResponse(request string) string {
 
 	switch {
 	case req.path == "/":
-		return PROTOCOL + HTTP_STATUS_OK + SEPARATOR + SEPARATOR
+		response := NewResponse()
+		response.SetProtocol(PROTOCOL)
+		response.SetStatus(HTTP_STATUS_OK)
+		return response.String()
 	case strings.HasPrefix(req.path, ECHO_PATH):
 		body := strings.ReplaceAll(req.path, ECHO_PATH, "")
-		return PROTOCOL + HTTP_STATUS_OK + SEPARATOR + CONTENT_TYPE_HEADER + CONTENT_TYPE_TEXT + SEPARATOR + CONTENT_LENGTH_HEADER + fmt.Sprintf("%d", len(body)) + SEPARATOR + SEPARATOR + body
+
+		response := NewResponse()
+		response.SetProtocol(PROTOCOL)
+		response.SetStatus(HTTP_STATUS_OK)
+
+		if req.headers[ACCEPT_ENCODING_HEADER] == ENCODING_TYPE_GZIP {
+			response.SetHeader(CONTENT_ENCODING_HEADER, ENCODING_TYPE_GZIP)
+		}
+
+		response.SetHeader(CONTENT_TYPE_HEADER, CONTENT_TYPE_TEXT)
+		response.SetHeader(CONTENT_LENGTH_HEADER, fmt.Sprintf("%d", len(body)))
+		response.SetBody(body)
+
+		return response.String()
 	case strings.HasPrefix(req.path, USER_AGENT_PATH):
-		return PROTOCOL + HTTP_STATUS_OK + SEPARATOR + CONTENT_TYPE_HEADER + CONTENT_TYPE_TEXT + SEPARATOR + CONTENT_LENGTH_HEADER + fmt.Sprintf("%d", len(req.headers["User-Agent"])) + SEPARATOR + SEPARATOR + req.headers["User-Agent"]
+		response := NewResponse()
+		response.SetProtocol(PROTOCOL)
+		response.SetStatus(HTTP_STATUS_OK)
+		response.SetHeader(CONTENT_TYPE_HEADER, CONTENT_TYPE_TEXT)
+		response.SetHeader(CONTENT_LENGTH_HEADER, fmt.Sprintf("%d", len(req.headers["User-Agent"])))
+		response.SetBody(req.headers["User-Agent"])
+
+		return response.String()
 	case strings.HasPrefix(req.path, FILES_PATH):
 		file := strings.Split(req.path, "/")[2]
 		directory := GetDirectoryArg()
@@ -67,33 +90,65 @@ func handleResponse(request string) string {
 		case req.method == GET:
 			content, err := os.ReadFile(path)
 
+			response := NewResponse()
+			response.SetProtocol(PROTOCOL)
+
 			if err != nil {
 				fmt.Println("Error reading file: ", err.Error())
 				content := []byte("File not found")
-				return PROTOCOL + HTTP_STATUS_NOT_FOUND + SEPARATOR + CONTENT_TYPE_HEADER + CONTENT_TYPE_TEXT + SEPARATOR + CONTENT_LENGTH_HEADER + fmt.Sprintf("%d", len(content)) + SEPARATOR + SEPARATOR + string(content)
+
+				response.SetStatus(HTTP_STATUS_NOT_FOUND)
+				response.SetHeader(CONTENT_TYPE_HEADER, CONTENT_TYPE_TEXT)
+				response.SetHeader(CONTENT_LENGTH_HEADER, fmt.Sprintf("%d", len(content)))
+				response.SetBody(string(content))
+
+				return response.String()
 			}
 
-			return PROTOCOL + HTTP_STATUS_OK + SEPARATOR + CONTENT_TYPE_HEADER + CONTENT_TYPE_STREAM + SEPARATOR + CONTENT_LENGTH_HEADER + fmt.Sprintf("%d", len(content)) + SEPARATOR + SEPARATOR + string(content)
+			response.SetStatus(HTTP_STATUS_OK)
+			response.SetHeader(CONTENT_TYPE_HEADER, CONTENT_TYPE_STREAM)
+			response.SetHeader(CONTENT_LENGTH_HEADER, fmt.Sprintf("%d", len(content)))
+			response.SetBody(string(content))
+
+			return response.String()
 		case req.method == POST:
 			file, err := os.Create(path)
 			fileContents := strings.Split(request, SEPARATOR+SEPARATOR)[1]
 
+			response := NewResponse()
+			response.SetProtocol(PROTOCOL)
+
 			if err != nil {
 				fmt.Println("Error creating file: ", err.Error())
-				return PROTOCOL + HTTP_STATUS_INTERNAL + SEPARATOR + SEPARATOR
+				response.SetStatus(HTTP_STATUS_INTERNAL)
+
+				return response.String()
 			}
 
 			buf := []byte(fileContents)
 			_, err = file.Write(buf)
 			if err != nil {
 				fmt.Println("Error writing to file: ", err.Error())
-				return PROTOCOL + HTTP_STATUS_INTERNAL + SEPARATOR + SEPARATOR
+				response.SetStatus(HTTP_STATUS_INTERNAL)
+
+				return response.String()
 			}
-			return PROTOCOL + HTTP_STATUS_CREATED + SEPARATOR + SEPARATOR
+
+			response.SetStatus(HTTP_STATUS_CREATED)
+
+			return response.String()
 		default:
-			return PROTOCOL + HTTP_STATUS_NOT_IMPL + SEPARATOR + SEPARATOR
+			response := NewResponse()
+			response.SetProtocol(PROTOCOL)
+			response.SetStatus(HTTP_STATUS_NOT_IMPL)
+
+			return response.String()
 		}
 	default:
-		return PROTOCOL + HTTP_STATUS_NOT_FOUND + SEPARATOR + SEPARATOR
+		response := NewResponse()
+		response.SetProtocol(PROTOCOL)
+		response.SetStatus(HTTP_STATUS_NOT_FOUND)
+
+		return response.String()
 	}
 }

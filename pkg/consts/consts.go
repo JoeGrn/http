@@ -41,3 +41,9 @@ const (
 	PUT    = "PUT"
 	DELETE = "DELETE"
 )
+
+const (
+	PORT = "8080"
+	HOST = "0.0.0.0"
+	URL  = HOST + ":" + PORT
+)

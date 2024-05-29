@@ -5,16 +5,17 @@ import (
 	"net"
 	"os"
 
+	"github.com/joegrn/http/pkg/consts"
 	"github.com/joegrn/http/pkg/request"
 	"github.com/joegrn/http/pkg/response"
 )
 
 func Serve() {
 
-	l, err := net.Listen("tcp", "0.0.0.0:4221")
+	l, err := net.Listen("tcp", consts.URL)
 
 	if err != nil {
-		fmt.Println("Failed to bind to port 4221")
+		fmt.Println("Failed to bind to port: ", consts.URL)
 		os.Exit(1)
 	}
 

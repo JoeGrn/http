@@ -1,5 +1,4 @@
-# Step 1: Build the Go binary
-FROM golang:1.22.3-alpine AS builder
+FROM golang:1.22.3-alpine
 
 WORKDIR /app
 

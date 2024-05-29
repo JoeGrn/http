@@ -4,17 +4,31 @@ A http server built in Go that's capable of handling GET/POST requests, serving 
 
 ## Requirements
 
-* `go` v1.22
+`go` v1.22
+
+## Makefile
+
+To simplify the build and run process, you can use the following Makefile commands:
+
+`make all` - test and build the application
+
+`make build` - build the application and output the executable into /dist
+
+`make run` - build and run the application
+
+`make fmt` - format the codebase with go fmt
+
+`make test` - run the unit tests
+
+## Docker
+
+To build and run the HTTP server using Docker, you can use the following commands:
+
+`make docker-build` - build the docker image
+
+`make docker-run` - run the image exposed on port 8080
 
 ## Usage
-
-`go build ./cmd/http` - build the application this will output an executable 'http'
-
-`./http` - run the http server
-
-`docker build -t http .` - build the application using docker if you do not have go on your system
-
-`docker run -p 8080:8080 http` - run the container exposing port 8080
 
 `curl -v GET http://localhost:4221/` - get a 200 response
 

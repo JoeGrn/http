@@ -1,9 +1,9 @@
-package main
+package request
 
 import (
-	"compress/gzip"
-	"os"
 	"strings"
+
+	"github.com/joegrn/http/pkg/consts"
 )
 
 func ParseHeaders(request string) map[string]string {
@@ -25,31 +25,13 @@ func ParseHeaders(request string) map[string]string {
 func ParseRequest(request string) *Request {
 	parts := strings.Split(request, " ")
 	headers := ParseHeaders(request)
+	body := strings.Split(request, consts.SEPARATOR+consts.SEPARATOR)[1]
 
 	return &Request{
-		method:          parts[0],
-		path:            parts[1],
-		headers:         headers,
-		protocolVersion: parts[2],
+		Method:          parts[0],
+		Path:            parts[1],
+		ProtocolVersion: parts[2],
+		Headers:         headers,
+		Body:            body,
 	}
-}
-
-func GetDirectoryArg() string {
-	args := os.Args
-	for i := 1; i < len(args)-1; i++ {
-		if args[i] == "--directory" {
-			return args[i+1]
-		}
-	}
-
-	return ""
-}
-
-func GzipCompress(data string) string {
-	var b strings.Builder
-	w := gzip.NewWriter(&b)
-	w.Write([]byte(data))
-	w.Close()
-
-	return b.String()
 }

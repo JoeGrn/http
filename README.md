@@ -4,7 +4,7 @@ A http server built in Go that's capable of handling GET/POST requests, serving 
 
 ## Usage
 
-`go build` - build the application this will output and executable 'http'
+`go build ./cmd/http` - build the application this will output an executable 'http'
 
 `./http` - run the http server
 

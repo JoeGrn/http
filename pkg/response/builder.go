@@ -1,4 +1,8 @@
-package main
+package response
+
+import (
+	"github.com/joegrn/http/pkg/consts"
+)
 
 func NewResponse() *Response {
 	return &Response{
@@ -23,10 +27,10 @@ func (r *Response) SetBody(body string) {
 }
 
 func (r *Response) String() string {
-	res := r.Protocol + r.Status + SEPARATOR
+	res := r.Protocol + r.Status + consts.SEPARATOR
 	for k, v := range r.Headers {
-		res += k + ": " + v + SEPARATOR
+		res += k + ": " + v + consts.SEPARATOR
 	}
-	res += SEPARATOR + r.Body
+	res += consts.SEPARATOR + r.Body
 	return res
 }

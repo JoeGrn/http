@@ -1,4 +1,4 @@
-package main
+package consts
 
 const (
 	PROTOCOL              = "HTTP/1.1 "
@@ -29,6 +29,7 @@ const (
 )
 
 const (
+	ROOT_PATH       = "/"
 	FILES_PATH      = "/files/"
 	ECHO_PATH       = "/echo/"
 	USER_AGENT_PATH = "/user-agent"

@@ -15,7 +15,7 @@ func ParseHeaders(request string) map[string]string {
 			break
 		}
 
-		parts := strings.Split(lines[i], ": ")
+		parts := strings.Split(strings.TrimSpace(lines[i]), ": ")
 		headers[parts[0]] = parts[1]
 	}
 
@@ -28,10 +28,14 @@ func ParseRequest(request string) *Request {
 	body := strings.Split(request, consts.SEPARATOR+consts.SEPARATOR)[1]
 
 	return &Request{
-		Method:          parts[0],
-		Path:            parts[1],
-		ProtocolVersion: parts[2],
+		Method:          RemoveSeparators(parts[0]),
+		Path:            RemoveSeparators(parts[1]),
+		ProtocolVersion: RemoveSeparators(parts[2]),
 		Headers:         headers,
 		Body:            body,
 	}
+}
+
+func RemoveSeparators(request string) string {
+	return strings.ReplaceAll(request, consts.SEPARATOR, "")
 }

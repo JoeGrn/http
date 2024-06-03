@@ -28,12 +28,13 @@ func Serve() {
 			os.Exit(1)
 		}
 
-		go handleConnection(conn)
+		go HandleConnection(conn)
 	}
 
 }
 
-func handleConnection(conn net.Conn) {
+func HandleConnection(conn net.Conn) {
+
 	defer conn.Close()
 	buf := make([]byte, 1024)
 	for {

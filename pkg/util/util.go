@@ -17,6 +17,8 @@ func GetDirectoryArg() string {
 	return ""
 }
 
+type Compressor func(data string) string
+
 func GzipCompress(data string) string {
 	var b strings.Builder
 	w := gzip.NewWriter(&b)

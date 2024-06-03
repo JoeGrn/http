@@ -11,14 +11,14 @@ import (
 	"github.com/joegrn/http/pkg/util"
 )
 
-func handleRoot() string {
+func HandleRoot() string {
 	response := NewResponse()
 	response.SetProtocol(consts.PROTOCOL)
 	response.SetStatus(consts.HTTP_STATUS_OK)
 	return response.String()
 }
 
-func handleEcho(req *request.Request) string {
+func HandleEcho(req *request.Request, compressor util.Compressor) string {
 	body := strings.ReplaceAll(req.Path, consts.ECHO_PATH, "")
 
 	response := NewResponse()
@@ -28,7 +28,7 @@ func handleEcho(req *request.Request) string {
 
 	if strings.Contains(req.Headers[consts.ACCEPT_ENCODING_HEADER], consts.ENCODING_TYPE_GZIP) {
 		response.SetHeader(consts.CONTENT_ENCODING_HEADER, consts.ENCODING_TYPE_GZIP)
-		body = util.GzipCompress(body)
+		body = compressor(body)
 
 	}
 
@@ -38,7 +38,7 @@ func handleEcho(req *request.Request) string {
 	return response.String()
 }
 
-func handleUserAgent(req *request.Request) string {
+func HandleUserAgent(req *request.Request) string {
 	response := NewResponse()
 	response.SetProtocol(consts.PROTOCOL)
 	response.SetStatus(consts.HTTP_STATUS_OK)
@@ -49,7 +49,7 @@ func handleUserAgent(req *request.Request) string {
 	return response.String()
 }
 
-func handleNotFound() string {
+func HandleNotFound() string {
 	response := NewResponse()
 	response.SetProtocol(consts.PROTOCOL)
 	response.SetStatus(consts.HTTP_STATUS_NOT_FOUND)
@@ -57,7 +57,7 @@ func handleNotFound() string {
 	return response.String()
 }
 
-func handleFiles(req *request.Request) string {
+func HandleFiles(req *request.Request) string {
 	file := strings.Split(req.Path, "/")[2]
 	directory := util.GetDirectoryArg()
 	path := filepath.Join(directory, file)
@@ -125,14 +125,14 @@ func handleFiles(req *request.Request) string {
 func HandleResponse(req *request.Request) string {
 	switch {
 	case req.Path == consts.ROOT_PATH:
-		return handleRoot()
+		return HandleRoot()
 	case strings.HasPrefix(req.Path, consts.ECHO_PATH):
-		return handleEcho(req)
+		return HandleEcho(req, util.GzipCompress)
 	case strings.HasPrefix(req.Path, consts.USER_AGENT_PATH):
-		return handleUserAgent(req)
+		return HandleUserAgent(req)
 	case strings.HasPrefix(req.Path, consts.FILES_PATH):
-		return handleFiles(req)
+		return HandleFiles(req)
 	default:
-		return handleNotFound()
+		return HandleNotFound()
 	}
 }
